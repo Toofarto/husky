@@ -100,3 +100,9 @@ add_executable(SVM svm.cpp)
 target_link_libraries(SVM ${husky})
 target_link_libraries(SVM ${EXTERNAL_LIB})
 set_property(TARGET SVM PROPERTY CXX_STANDARD 14)
+
+# Butterfly
+add_executable(Butterfly butterfly.cpp)
+target_link_libraries(Butterfly ${husky})
+target_link_libraries(Butterfly ${EXTERNAL_LIB})
+set_property(TARGET Butterfly PROPERTY CXX_STANDARD 14)
