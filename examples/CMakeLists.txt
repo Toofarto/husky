@@ -114,3 +114,9 @@ add_executable(AMAT affinity.cpp)
 target_link_libraries(AMAT ${husky})
 target_link_libraries(AMAT ${HUSKY_EXTERNAL_LIB})
 husky_default_properties(AMAT)
+
+# Butterfly
+add_executable(Butterfly butterfly.cpp)
+target_link_libraries(Butterfly ${husky})
+target_link_libraries(Butterfly ${EXTERNAL_LIB})
+husky_default_properties(Butterfly)
