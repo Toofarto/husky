@@ -118,5 +118,5 @@ husky_default_properties(AMAT)
 # Butterfly
 add_executable(Butterfly butterfly.cpp)
 target_link_libraries(Butterfly ${husky})
-target_link_libraries(Butterfly ${EXTERNAL_LIB})
+target_link_libraries(Butterfly ${HUSKY_EXTERNAL_LIB})
 husky_default_properties(Butterfly)

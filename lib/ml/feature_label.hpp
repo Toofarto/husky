@@ -14,6 +14,8 @@
 
 #pragma once
 
+#include <random>
+
 #include "lib/vector.hpp"
 
 namespace husky {
@@ -31,10 +33,27 @@ class LabeledPointHObj : public LabeledPoint<Vector<FeatureT, is_sparse>, LabelT
     const KeyT& id() const { return key; }
 
     // constructors
-    LabeledPointHObj() : LabeledPoint<FeatureV, LabelT>() {}
-    explicit LabeledPointHObj(int feature_num) : LabeledPoint<FeatureV, LabelT>() { this->x = FeatureV(feature_num); }
-    LabeledPointHObj(FeatureV& x, LabelT& y) : LabeledPoint<FeatureV, LabelT>(x, y) {}
-    LabeledPointHObj(FeatureV&& x, LabelT&& y) : LabeledPoint<FeatureV, LabelT>(x, y) {}
+    LabeledPointHObj() : LabeledPoint<FeatureV, LabelT>() { init(); }
+    explicit LabeledPointHObj(int feature_num) : LabeledPoint<FeatureV, LabelT>() { this->x = FeatureV(feature_num); init(); }
+    LabeledPointHObj(FeatureV& x, LabelT& y) : LabeledPoint<FeatureV, LabelT>(x, y) { init(); }
+    LabeledPointHObj(FeatureV&& x, LabelT&& y) : LabeledPoint<FeatureV, LabelT>(x, y) { init(); }
+
+    void init() {
+		std::mt19937 rng;
+		rng.seed(std::random_device()());
+		std::uniform_int_distribution<std::mt19937::result_type> dist(1, 1 << 31);
+		key = dist(rng);
+    }
+
+    friend BinStream& operator<<(husky::BinStream& stream, LabeledPointHObj<FeatureT, LabelT, is_sparse>& obj) {
+        stream << obj.key << obj.x << obj.y;
+        return stream;
+    }
+
+    friend BinStream& operator>>(husky::BinStream& stream, LabeledPointHObj<FeatureT, LabelT, is_sparse>& obj) {
+        stream >> obj.key >> obj.x >> obj.y;
+        return stream;
+    }
 };  // LabeledPointHObj
 
 }  // namespace ml
