@@ -79,18 +79,19 @@ int butterfly_idx(int node_idx, int t, int n_node) {
 	return j;
 }
 
-void send_to_fly(husky::base::BinStream bin, husky::LocalMailbox* mailbox) {
+void send_to_fly(husky::base::BinStream& bin, husky::LocalMailbox* mailbox) {
     static thread_local int time = 0;
     int sender_tid = husky::Context::get_global_tid();
     bin << sender_tid;
     int target_tid = butterfly_idx(sender_tid + 1, time++, husky::Context::get_num_workers()) - 1;
     mailbox->send(target_tid, 0, 0, bin);
     // husky::LOG_I << "sender: " << sender_tid << ", going to: " << target_tid << ", time: " << time;
-    mailbox->send_complete(0, 0, husky::Context::get_worker_info().get_local_tids(), husky::Context::get_worker_info().get_pids());
+    // mailbox->send_complete(0, 0, husky::Context::get_worker_info().get_local_tids(), husky::Context::get_worker_info().get_pids());
 }
+
 husky::base::BinStream receiving() {
     husky::LocalMailbox* mailbox = husky::Context::get_mailbox();
-    while (!mailbox->poll(0, 0)) { boost::this_thread::sleep(boost::posix_time::milliseconds(100)); };
+    assert(mailbox->poll(0, 0) == true);
     return mailbox->recv(0, 0);
 }
 
@@ -122,7 +123,7 @@ void regression() {
     }
 
     int num_features = husky::lib::ml::load_data(husky::Context::get_param("train"), train_set, format);
-    husky::globalize(train_set);
+    husky::balance(train_set);
     husky::lib::ml::load_data(husky::Context::get_param("test"), test_set, format, num_features);
     // husky::globalize(test_set);
 
